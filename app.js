@@ -1,9 +1,9 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
-const cors = require("cors");
 const userRoutes = require("./routes/user");
 const bodyParser = require("body-parser");
+const path = require("path");
 
 mongoose
   .connect(
@@ -26,8 +26,8 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use("/images", express.static(path.join(__dirname, "images")));
 app.use(bodyParser.json());
-app.use(cors());
 app.use("/api/auth", userRoutes);
 
 module.exports = app;
