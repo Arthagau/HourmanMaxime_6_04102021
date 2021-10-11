@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
 const jsonToken = require("jsonwebtoken");
+require("dotenv").config();
 
 exports.signup = (req, res, next) => {
   bcrypt
@@ -24,20 +25,26 @@ exports.login = (req, res, next) => {
   User.findOne({ email: req.body.email })
     .then((user) => {
       if (!user) {
-        return res.status(401).json({ error: "Utilisateur non trouvé !" });
+        return res.status(400).json({ error: "Utilisateur non trouvé !" });
       }
       bcrypt
         .compare(req.body.password, user.password)
         .then((valid) => {
           if (!valid) {
-            return res.status(401).json({ error: "Mot de passe incorrect !" });
+            return res.status(400).json({ error: "Mot de passe incorrect !" });
           }
           res.status(200).json({
+            // TODO créer variable d'environnement pour la clé secrète, voir plugin dotenv
             userId: user._id,
-            token: jsonToken.sign({ userId: user._id }, "TEST_TOKEN", {
-              expiresIn: "24h",
-            }),
+            token: jsonToken.sign(
+              { userId: user._id },
+              process.env.SECRET_TOKEN,
+              {
+                expiresIn: "24h",
+              }
+            ),
           });
+          console.log(req.body.token);
         })
         .catch((error) => res.status(500).json({ error }));
     })
