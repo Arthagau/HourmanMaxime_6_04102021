@@ -34,7 +34,6 @@ exports.login = (req, res, next) => {
             return res.status(400).json({ error: "Mot de passe incorrect !" });
           }
           res.status(200).json({
-            // TODO créer variable d'environnement pour la clé secrète, voir plugin dotenv
             userId: user._id,
             token: jsonToken.sign(
               { userId: user._id },
@@ -44,7 +43,6 @@ exports.login = (req, res, next) => {
               }
             ),
           });
-          console.log(req.body.token);
         })
         .catch((error) => res.status(500).json({ error }));
     })
