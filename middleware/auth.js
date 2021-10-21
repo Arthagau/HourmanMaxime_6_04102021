@@ -1,20 +1,15 @@
 const jsonToken = require("jsonwebtoken");
 require("dotenv").config();
 
-module.exports = (req, res, next) => {
+module.exports = function (req, res, next) {
+  const token = req.headers.authorization.split(" ")[1];
+  if (!token) return res.status(401).send("Accès refusé !");
+
   try {
-    const token = req.headers.authorization.split(" ")[1];
-    const decodedToken = jsonToken.verify(token, process.env.SECRET_TOKEN);
-    const userId = decodedToken.userId;
-    req.userId = decodedToken.userId;
-    if (req.body.userId && req.body.userId !== userId) {
-      throw "User ID non valable !";
-    } else {
-      next();
-    }
-  } catch {
-    res.status(401).json({
-      error: new Error("Requête non authentifiée !"),
-    });
+    const verified = jsonToken.verify(token, process.env.SECRET_TOKEN);
+    req.user = verified;
+    next();
+  } catch (err) {
+    res.status(403).json({ error: "Unauthorized request" });
   }
 };
