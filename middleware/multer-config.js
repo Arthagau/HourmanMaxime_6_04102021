@@ -1,4 +1,4 @@
-const multer = require("multer");
+const multer = require("multer"); // permet de télécharger les images des sauces lors de leur création
 
 const MIME_TYPES = {
   "images/jpg": "jpg",

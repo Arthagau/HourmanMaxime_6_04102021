@@ -1,5 +1,8 @@
 const mongoose = require("mongoose");
 
+/* Utilisation de mongoose et de sa méthode Schema pour créer un schéma de données
+que l'on exporte ensuite en tant que modèle pour l'utiliser dans notre application*/
+
 const sauceSchema = mongoose.Schema({
   userId: { type: String, required: true },
   name: { type: String, required: true },

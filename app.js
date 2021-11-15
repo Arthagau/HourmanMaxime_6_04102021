@@ -1,13 +1,14 @@
 const express = require("express");
-const mongoose = require("mongoose");
-const helmet = require("helmet");
-const path = require("path");
+const mongoose = require("mongoose"); // permet d'intéragir plus facilement avec la base de données sur MongoDB
+const helmet = require("helmet"); // permet de sécuriser l'application en mettant en place des headers HTTP
+const path = require("path"); // permet de travailler avec des fichiers et répertoires
 const userRoutes = require("./routes/user");
 const sauceRoutes = require("./routes/sauce");
-require("dotenv").config();
+require("dotenv").config(); // permet de mettre en place des variables d'environnement, ici pour se connecter à mongoDB
 
 mongoose
   .connect(process.env.MY_MONGO_DB, {
+    // penser à bien remplacer la clé MY_MONGO_DB dans le fichier .env par votre lien de connexion
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
