@@ -1,18 +1,23 @@
 const express = require("express");
-const mongoose = require("mongoose");
-const app = express();
-const cors = require("cors");
+const mongoose = require("mongoose"); // permet d'intéragir plus facilement avec la base de données sur MongoDB
+const helmet = require("helmet"); // permet de sécuriser l'application en mettant en place des headers HTTP
+const path = require("path"); // permet de travailler avec des fichiers et répertoires
 const userRoutes = require("./routes/user");
-const bodyParser = require("body-parser");
+const sauceRoutes = require("./routes/sauce");
+require("dotenv").config(); // permet de mettre en place des variables d'environnement, ici pour se connecter à mongoDB
 
 mongoose
-  .connect(
-    "mongodb+srv://admin:jJDDatrmZQrUWgYe@cluster0.rk7en.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-    { useNewUrlParser: true, useUnifiedTopology: true }
-  )
+  .connect(process.env.MY_MONGO_DB, {
+    // penser à bien remplacer la clé MY_MONGO_DB dans le fichier .env par votre lien de connexion
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => console.log("Connexion à MongoDB réussie !"))
   .catch(() => console.log("Connexion à MongoDB échouée !"));
 
+const app = express();
+
+app.use(helmet());
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
@@ -26,8 +31,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(bodyParser.json());
-app.use(cors());
+app.use(express.json());
+app.use("/images", express.static(path.join(__dirname, "images")));
 app.use("/api/auth", userRoutes);
+app.use("/api/sauces", sauceRoutes);
 
 module.exports = app;
